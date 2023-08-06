@@ -23,16 +23,6 @@ class ListFragment : Fragment() {
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        binding.buttonDetails.setOnClickListener {
-            val action = ListFragmentDirections.actionDetailFragment()
-            action.dogUuid = 5
-            Navigation.findNavController(it).navigate(action)
-        }
-    }
-
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
