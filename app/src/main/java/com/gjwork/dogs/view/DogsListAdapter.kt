@@ -3,6 +3,7 @@ package com.gjwork.dogs.view
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
 import com.gjwork.dogs.R
 import com.gjwork.dogs.databinding.ItemDogBinding
@@ -30,6 +31,11 @@ class DogsListAdapter(val dogsList: ArrayList<DogBreed>): RecyclerView.Adapter<D
             with (dogsList[position]) {
                 binding.name.text = this.dogBread
                 binding.lifespan.text = this.lifeSpan
+
+                binding.root.setOnClickListener {
+                    val action = ListFragmentDirections.actionDetailFragment()
+                    Navigation.findNavController(it).navigate((action))
+                }
             }
         }
     }
