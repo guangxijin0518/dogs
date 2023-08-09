@@ -8,6 +8,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.gjwork.dogs.R
 import com.gjwork.dogs.databinding.ItemDogBinding
 import com.gjwork.dogs.model.DogBreed
+import com.gjwork.dogs.util.getProgressDrawable
+import com.gjwork.dogs.util.loadImage
 
 class DogsListAdapter(val dogsList: ArrayList<DogBreed>): RecyclerView.Adapter<DogsListAdapter.DogsViewHolder>() {
     inner class DogsViewHolder(val binding: ItemDogBinding): RecyclerView.ViewHolder(binding.root)
@@ -36,6 +38,8 @@ class DogsListAdapter(val dogsList: ArrayList<DogBreed>): RecyclerView.Adapter<D
                     val action = ListFragmentDirections.actionDetailFragment()
                     Navigation.findNavController(it).navigate((action))
                 }
+
+                binding.imageView.loadImage(this.imageUrl, getProgressDrawable(binding.imageView.context))
             }
         }
     }
