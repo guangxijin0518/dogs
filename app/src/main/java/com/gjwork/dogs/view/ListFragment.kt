@@ -5,11 +5,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.gjwork.dogs.R
 import com.gjwork.dogs.databinding.FragmentListBinding
 import com.gjwork.dogs.viewmodel.ListViewModel
 
@@ -24,7 +21,7 @@ class ListFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
         _binding = FragmentListBinding.inflate(inflater, container, false)
         return binding.root
@@ -41,24 +38,33 @@ class ListFragment : Fragment() {
             adapter = dogsListAdapter
         }
 
+        binding.refreshLayout.setOnRefreshListener {
+            binding.dogsList.visibility = View.GONE
+            binding.listError.visibility = View.GONE
+            binding.loadingView.visibility = View.VISIBLE
+
+            viewModel.refresh()
+            binding.refreshLayout.isRefreshing = false
+        }
+
         observeViewModel()
     }
 
-    fun observeViewModel() {
-        viewModel.dogs.observe(this, Observer { dogs ->
+    private fun observeViewModel() {
+        viewModel.dogs.observe(viewLifecycleOwner) { dogs ->
             dogs?.let {
                 binding.dogsList.visibility = View.VISIBLE
                 dogsListAdapter.updateDogList(dogs)
             }
-        })
+        }
 
-        viewModel.isError.observe(this, Observer { isError ->
+        viewModel.isError.observe(viewLifecycleOwner) { isError ->
             isError?.let {
                 binding.listError.visibility = if (isError) View.VISIBLE else View.GONE
             }
-        })
+        }
 
-        viewModel.isLoading.observe(this, Observer { isLoading ->
+        viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
             isLoading?.let {
                 binding.loadingView.visibility = if (isLoading) View.VISIBLE else View.GONE
 
@@ -67,7 +73,7 @@ class ListFragment : Fragment() {
                     binding.listError.visibility = View.GONE
                 }
             }
-        })
+        }
     }
 
     override fun onDestroyView() {
