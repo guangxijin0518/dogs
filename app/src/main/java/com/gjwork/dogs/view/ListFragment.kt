@@ -43,7 +43,7 @@ class ListFragment : Fragment() {
             binding.listError.visibility = View.GONE
             binding.loadingView.visibility = View.VISIBLE
 
-            viewModel.refresh()
+            viewModel.refreshBypassCache()
             binding.refreshLayout.isRefreshing = false
         }
 
