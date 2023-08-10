@@ -1,5 +1,6 @@
 package com.gjwork.dogs.view
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,13 +10,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.gjwork.dogs.R
 import com.gjwork.dogs.databinding.ItemDogBinding
 import com.gjwork.dogs.model.DogBreed
-import com.gjwork.dogs.util.getProgressDrawable
-import com.gjwork.dogs.util.loadImage
 
-class DogsListAdapter(val dogsList: ArrayList<DogBreed>) :
+class DogsListAdapter(private val dogsList: ArrayList<DogBreed>) :
     RecyclerView.Adapter<DogsListAdapter.DogsViewHolder>(), DogClickListener {
     inner class DogsViewHolder(val binding: ItemDogBinding) : RecyclerView.ViewHolder(binding.root)
 
+    @SuppressLint("NotifyDataSetChanged")
     fun updateDogList(newDogsList: List<DogBreed>) {
         dogsList.clear()
         dogsList.addAll(newDogsList)

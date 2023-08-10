@@ -13,7 +13,7 @@ data class DogBreed(
 
     @ColumnInfo(name = "dog_name")
     @SerializedName("name")
-    val dogBread: String?,
+    val dogBreed: String?,
 
     @ColumnInfo(name = "life_span")
     @SerializedName("life_span")
@@ -37,3 +37,5 @@ data class DogBreed(
     @PrimaryKey(autoGenerate = true)
     var uuid: Int = 0
 }
+
+data class DogPalette(val color: Int)

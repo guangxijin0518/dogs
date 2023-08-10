@@ -3,17 +3,28 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <data>
+        <variable
+            name="dog"
+            type="com.gjwork.dogs.model.DogBreed" />
+        <variable
+            name="palette"
+            type="com.gjwork.dogs.model.DogPalette" />
+    </data>
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".view.DetailFragment">
+        tools:context=".view.DetailFragment"
+        android:background="@{palette.color}">
 
         <ImageView
             android:id="@+id/dogImage"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:minHeight="200dp"
-            android:layout_alignParentTop="true"/>
+            android:layout_alignParentTop="true"
+            android:imageUrl="@{dog.imageUrl}"/>
 
         <TextView
             android:id="@+id/dogName"
@@ -23,7 +34,7 @@
             android:layout_margin="4dp"
             android:layout_centerHorizontal="true"
             style="@style/Title"
-            android:text="Dog name"/>
+            android:text="@{dog.dogBreed}"/>
 
         <TextView
             android:id="@+id/dogPurpose"
@@ -33,7 +44,7 @@
             android:layout_margin="4dp"
             android:layout_centerHorizontal="true"
             style="@style/Text"
-            android:text="Dog purpose"/>
+            android:text="@{dog.bredFor}"/>
 
         <TextView
             android:id="@+id/dogTemperament"
@@ -43,7 +54,7 @@
             android:layout_margin="4dp"
             android:layout_centerHorizontal="true"
             style="@style/Text"
-            android:text="Dog temperament"/>
+            android:text="@{dog.temperament}"/>
 
         <TextView
             android:id="@+id/dogLifespan"
@@ -53,6 +64,6 @@
             android:layout_margin="4dp"
             android:layout_centerHorizontal="true"
             style="@style/Text"
-            android:text="Dog lifespan"/>
+            android:text="@{dog.lifeSpan}"/>
     </RelativeLayout>
 </layout>
