@@ -10,6 +10,8 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.Navigation
 import com.gjwork.dogs.R
 import com.gjwork.dogs.databinding.FragmentDetailBinding
+import com.gjwork.dogs.util.getProgressDrawable
+import com.gjwork.dogs.util.loadImage
 import com.gjwork.dogs.viewmodel.DetailViewModel
 
 class DetailFragment : Fragment() {
@@ -36,7 +38,7 @@ class DetailFragment : Fragment() {
         }
 
         viewModel = ViewModelProviders.of(this)[DetailViewModel::class.java]
-        viewModel.fetch()
+        viewModel.fetch(dogUuid)
 
         observeViewModel()
     }
@@ -48,6 +50,7 @@ class DetailFragment : Fragment() {
                 binding.dogPurpose.text = dog.bredFor
                 binding.dogTemperament.text = dog.temperament
                 binding.dogLifespan.text = dog.lifeSpan
+                binding.dogImage.loadImage(dog.imageUrl, getProgressDrawable(binding.dogImage.context))
             }
         })
     }

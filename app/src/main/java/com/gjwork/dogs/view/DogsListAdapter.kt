@@ -3,6 +3,7 @@ package com.gjwork.dogs.view
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
 import com.gjwork.dogs.R
@@ -11,8 +12,9 @@ import com.gjwork.dogs.model.DogBreed
 import com.gjwork.dogs.util.getProgressDrawable
 import com.gjwork.dogs.util.loadImage
 
-class DogsListAdapter(val dogsList: ArrayList<DogBreed>): RecyclerView.Adapter<DogsListAdapter.DogsViewHolder>() {
-    inner class DogsViewHolder(val binding: ItemDogBinding): RecyclerView.ViewHolder(binding.root)
+class DogsListAdapter(val dogsList: ArrayList<DogBreed>) :
+    RecyclerView.Adapter<DogsListAdapter.DogsViewHolder>(), DogClickListener {
+    inner class DogsViewHolder(val binding: ItemDogBinding) : RecyclerView.ViewHolder(binding.root)
 
     fun updateDogList(newDogsList: List<DogBreed>) {
         dogsList.clear()
@@ -29,18 +31,23 @@ class DogsListAdapter(val dogsList: ArrayList<DogBreed>): RecyclerView.Adapter<D
     override fun getItemCount() = dogsList.size
 
     override fun onBindViewHolder(holder: DogsViewHolder, position: Int) {
-        with (holder) {
-            with (dogsList[position]) {
-                binding.name.text = this.dogBread
-                binding.lifespan.text = this.lifeSpan
+        with(holder) {
+            with(dogsList[position]) {
+                binding.dog = this
+                binding.listener = this@DogsListAdapter
 
-                binding.root.setOnClickListener {
-                    val action = ListFragmentDirections.actionDetailFragment()
-                    Navigation.findNavController(it).navigate((action))
-                }
-
-                binding.imageView.loadImage(this.imageUrl, getProgressDrawable(binding.imageView.context))
+//                binding.root.setOnClickListener {
+//                    val action = ListFragmentDirections.actionDetailFragment()
+//                    action.dogUuid = this.uuid
+//                    Navigation.findNavController(it).navigate((action))
+//                }
             }
         }
+    }
+
+    override fun onDogClocked(v: View) {
+        val action = ListFragmentDirections.actionDetailFragment()
+        action.dogUuid = v.findViewById<TextView>(R.id.dogId).text.toString().toInt()
+        Navigation.findNavController(v).navigate((action))
     }
 }

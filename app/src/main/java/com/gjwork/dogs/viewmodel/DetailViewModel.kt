@@ -1,15 +1,20 @@
 package com.gjwork.dogs.viewmodel
 
+import android.app.Application
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.gjwork.dogs.model.DogBreed
+import com.gjwork.dogs.model.DogDatabase
+import kotlinx.coroutines.launch
 
-class DetailViewModel: ViewModel() {
+class DetailViewModel(application: Application): BaseViewModel(application) {
 
     val dogLiveData = MutableLiveData<DogBreed>()
 
-    fun fetch() {
-        val dog = DogBreed("3", "Rotwailer", "20 years", "breedGroup", "bredFor", "temperament", "")
-        dogLiveData.value = dog
+    fun fetch(uuid: Int) {
+        launch {
+            val dog = DogDatabase(getApplication()).dogDao().getDog(uuid)
+            dogLiveData.value = dog
+        }
     }
 }
