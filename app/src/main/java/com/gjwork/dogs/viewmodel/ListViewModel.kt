@@ -3,7 +3,6 @@ package com.gjwork.dogs.viewmodel
 import android.app.Application
 import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import com.gjwork.dogs.model.DogBreed
 import com.gjwork.dogs.model.DogDatabase
 import com.gjwork.dogs.model.DogsApiService
@@ -13,12 +12,12 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.observers.DisposableSingleObserver
 import io.reactivex.schedulers.Schedulers
-import io.reactivex.subscribers.DisposableSubscriber
 import kotlinx.coroutines.launch
+import java.lang.NumberFormatException
 
-class ListViewModel(application: Application): BaseViewModel(application) {
+class ListViewModel(application: Application) : BaseViewModel(application) {
     private val prefHelper = SharedPreferencesHelper(getApplication())
-    private val refreshTime = 5 * 60 * 1000 * 1000 * 1000L
+    private var refreshTime = 5 * 60 * 1000 * 1000 * 1000L
 
     private val dogsService = DogsApiService()
     private val disposable = CompositeDisposable()
@@ -28,11 +27,21 @@ class ListViewModel(application: Application): BaseViewModel(application) {
     val isLoading = MutableLiveData<Boolean>()
 
     fun refresh() {
+        checkCacheDuration()
         val updateTime = prefHelper.getUpdateTime()
         if (updateTime != null && updateTime != 0L && System.nanoTime() - updateTime < refreshTime) {
             fetchFromDatabase()
         } else {
             fetchFromRemote()
+        }
+    }
+
+    private fun checkCacheDuration() {
+        try {
+            val cacheDurationInt = prefHelper.getCacheDuration()?.toInt() ?: (5 * 60)
+            refreshTime = cacheDurationInt.times(1000 * 1000 * 1000L)
+        } catch (e: NumberFormatException) {
+            e.printStackTrace()
         }
     }
 
@@ -45,8 +54,9 @@ class ListViewModel(application: Application): BaseViewModel(application) {
         launch {
             val dogs = DogDatabase(getApplication()).dogDao().getAllDogs()
             dogsRetrieved(dogs)
-            Toast.makeText(getApplication(), "Dogs retrieved from database", Toast.LENGTH_SHORT).show()
-            NotificationsHelper(getApplication()).createNotification()
+            Toast.makeText(getApplication(), "Dogs retrieved from database", Toast.LENGTH_SHORT)
+                .show()
+
         }
     }
 
@@ -56,10 +66,15 @@ class ListViewModel(application: Application): BaseViewModel(application) {
             dogsService.getDogs()
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribeWith(object: DisposableSingleObserver<List<DogBreed>>() {
+                .subscribeWith(object : DisposableSingleObserver<List<DogBreed>>() {
                     override fun onSuccess(dogList: List<DogBreed>) {
                         storeDogsLocally(dogList)
-                        Toast.makeText(getApplication(), "Dogs retrieved from endpoint", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            getApplication(),
+                            "Dogs retrieved from endpoint",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        NotificationsHelper(getApplication()).createNotification()
                     }
 
                     override fun onError(e: Throwable) {
