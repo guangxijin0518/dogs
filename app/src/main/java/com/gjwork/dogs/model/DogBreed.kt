@@ -39,3 +39,9 @@ data class DogBreed(
 }
 
 data class DogPalette(val color: Int)
+
+data class SmsInfo(
+    var to: String,
+    val text: String,
+    val imageUrl: String?
+)
